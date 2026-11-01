@@ -115,7 +115,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 LinearLayout.LayoutParams.WRAP_CONTENT, dp(32)
             ).also { it.marginEnd = dp(8) }
             background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_chip)
-            setTextColor(ContextCompat.getColorStateList(requireContext(), R.color.chip_text)!!)
+            setTextColor(ContextCompat.getColorStateList(requireContext(), R.color.chip_text_color)!!)
             setOnClickListener {
                 selectedBucket = bucket
                 updateChipSelection()

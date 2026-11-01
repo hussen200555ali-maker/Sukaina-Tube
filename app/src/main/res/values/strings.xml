@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Sukaina Tube</string>
+
+    <string name="tab_home">الرئيسية</string>
+    <string name="tab_shorts">Shorts</string>
+    <string name="tab_create">إنشاء</string>
+    <string name="tab_subscriptions">الاشتراك</string>
+    <string name="tab_library">المكتبة</string>
+
+    <string name="action_search">بحث</string>
+    <string name="action_cast">بث</string>
+    <string name="action_notifications">الإشعارات</string>
+    <string name="action_settings">الإعدادات</string>
+    <string name="action_back">رجوع</string>
+    <string name="action_more">خيارات</string>
+
+    <string name="permission_title">السماح بعرض الفيديوهات</string>
+    <string name="permission_body">يحتاج التطبيق إلى الوصول إلى فيديوهات الهاتف لعرضها كأنها قناة. لن يتم رفع أي فيديو إلى الإنترنت.</string>
+    <string name="permission_button">السماح بالوصول</string>
+    <string name="permission_full">السماح بكل الفيديوهات</string>
+    <string name="permission_partial">تم السماح ببعض الفيديوهات فقط</string>
+
+    <string name="loading">جارٍ التحميل…</string>
+    <string name="empty_title">لا توجد فيديوهات</string>
+    <string name="empty_body">أضف بعض مقاطع الفيديو إلى هاتفك ثم أعد فتح التطبيق.</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="chip_all">الكل</string>
+
+    <string name="search_hint">ابحث في Sukaina Tube</string>
+    <string name="search_empty">لا توجد نتائج مطابقة</string>
+    <string name="search_results">%1$d نتيجة</string>
+
+    <string name="watch_subscribe">اشترك</string>
+    <string name="watch_subscribed">مشترك</string>
+    <string name="watch_like">أعجبني</string>
+    <string name="watch_dislike">لم يعجبني</string>
+    <string name="watch_share">مشاركة</string>
+    <string name="watch_download">تنزيل</string>
+    <string name="watch_save">حفظ</string>
+    <string name="watch_saved">تم الحفظ</string>
+    <string name="watch_comments">التعليقات</string>
+    <string name="watch_up_next">التالي</string>
+    <string name="watch_autoplay">تشغيل تلقائي</string>
+    <string name="watch_unavailable">غير متاح دون اتصال بالإنترنت</string>
+    <string name="watch_description">مرحباً بكم في Sukaina Tube! استمتعوا بمشاهدة الفيديوهات المحفوظة على هذا الجهاز. لا توجد إعلانات ولا تعليقات مزعجة.</string>
+    <string name="watch_subscribers">%1$s مشترك</string>
+
+    <string name="lib_history">السجل</string>
+    <string name="lib_liked">الفيديوهات التي أعجبتني</string>
+    <string name="lib_watch_later">مشاهدتها لاحقاً</string>
+    <string name="lib_playlists">المجلدات</string>
+    <string name="lib_you">أنت</string>
+    <string name="lib_empty">لا يوجد شيء هنا بعد</string>
+    <string name="lib_manage">إدارة الحساب</string>
+
+    <string name="parent_pin_title">منطقة ولي الأمر</string>
+    <string name="parent_pin_new">أنشئ رمزاً سرياً من 4 أرقام</string>
+    <string name="parent_pin_confirm">أعد إدخال الرمز</string>
+    <string name="parent_pin_enter">أدخل الرمز السري</string>
+    <string name="parent_pin_wrong">الرمز غير صحيح</string>
+    <string name="parent_pin_mismatch">الرمز غير متطابق</string>
+
+    <string name="parent_title">إعدادات ولي الأمر</string>
+    <string name="parent_folders_title">المجلدات المعروضة</string>
+    <string name="parent_folders_hint">عند تحديد مجلدات معينة ستظهر فيديوهاتها فقط، وتُخفى بقية فيديوهات الهاتف.</string>
+    <string name="parent_select_all">عرض كل المجلدات</string>
+    <string name="parent_clear_history">مسح سجل المشاهدة</string>
+    <string name="parent_cleared">تم مسح السجل</string>
+    <string name="parent_change_pin">تغيير الرمز السري</string>
+    <string name="parent_hide_shorts">إخفاء تبويب Shorts</string>
+    <string name="parent_hide_search">إخفاء البحث</string>
+    <string name="parent_hide_comments">إخفاء التعليقات</string>
+    <string name="parent_hide_comments_hint">إذا أُخفيت التعليقات ستبدو صفحة المشاهدة أنظف وأأمن للأطفال.</string>
+    <string name="parent_autoplay">تشغيل الفيديو التالي تلقائياً</string>
+    <string name="parent_resume">استئناف الفيديو من آخر موضع</string>
+    <string name="parent_lock_exit">قفل الخروج من التطبيق بالرمز</string>
+    <string name="parent_lock_exit_hint">عند تفعيله سيطلب التطبيق الرمز عند محاولة الخروج.</string>
+    <string name="parent_none">لا توجد مجلدات</string>
+
+    <string name="toast_unavailable">غير متاح دون اتصال بالإنترنت</string>
+    <string name="toast_create">غير متاح في هذا الإصدار</string>
+    <string name="shorts_empty">لا توجد مقاطع قصيرة</string>
+    <string name="subs_empty">لا توجد قنوات بعد</string>
+</resources>

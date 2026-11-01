@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="yt_red">#FFFF0033</color>
+    <color name="yt_red_dark">#FFCC0000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+
+    <color name="surface">#FF0F0F0F</color>
+    <color name="surface_alt">#FF1B1B1B</color>
+    <color name="text_primary">#FFF1F1F1</color>
+    <color name="text_secondary">#FFAAAAAA</color>
+    <color name="divider">#FF2E2E2E</color>
+    <color name="chip_bg">#FF272727</color>
+    <color name="chip_bg_selected">#FFF1F1F1</color>
+    <color name="chip_text">#FFF1F1F1</color>
+    <color name="chip_text_selected">#FF0F0F0F</color>
+    <color name="thumb_placeholder">#FF272727</color>
+    <color name="icon_tint">#FFF1F1F1</color>
+    <color name="like_active">#FF3EA6FF</color>
+    <color name="comment_bg">#FF272727</color>
+</resources>

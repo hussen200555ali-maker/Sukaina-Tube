@@ -1,6 +1,5 @@
 package com.sukaina.tube.player
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
@@ -11,17 +10,18 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.PopupMenu
-import androidx.media3.common.Player
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.media3.common.Player
+import androidx.media3.ui.TimeBar
 import com.sukaina.tube.R
 import com.sukaina.tube.databinding.ViewPlayerControlsBinding
 import com.sukaina.tube.util.Fmt
-import kotlin.math.abs
 import kotlin.math.max
 
 /**
- * طھط­ظƒظ… ظ…ط´ط؛ظ‘ظ„ ط¨ط´ظƒظ„ ظٹظˆطھظٹظˆط¨: ط§ط®ظپط§ط، طھظ„ظ‚ط§ط¦ظٹطŒ ط¶ط؛ط·ط© ظ…ط²ط¯ظˆط¬ط© آ±10 ط«ظˆط§ظ†ظچطŒ ط´ط±ظٹط· ط£ط­ظ…ط±طŒ ط³ط±ط¹ط©طŒ ظˆظ…ظ„ط، ط§ظ„ط´ط§ط´ط©.
+ * تحكم مشغّل بشكل يوتيوب: اخفاء تلقائي، ضغطة مزدوجة ±10 ثوانٍ، شريط أحمر،
+ * تغيير السرعة، وملء الشاشة.
  */
 class YtPlayerControls @JvmOverloads constructor(
     context: Context,
@@ -33,6 +33,8 @@ class YtPlayerControls @JvmOverloads constructor(
     private var player: Player? = null
     private val handler = Handler(Looper.getMainLooper())
     private var controlsVisible = true
+    private var scrubbing = false
+
     var isFullscreen: Boolean = false
         private set
 
@@ -40,11 +42,12 @@ class YtPlayerControls @JvmOverloads constructor(
     var onFullscreenToggle: ((Boolean) -> Unit)? = null
 
     private val hideRunnable = Runnable { hide() }
+    private val seekHideRunnable = Runnable { binding.seekIndicator.visibility = View.GONE }
 
     private val progressRunnable = object : Runnable {
         override fun run() {
             updateProgress()
-            handler.postDelayed(this, 300)
+            handler.postDelayed(this, 250)
         }
     }
 
@@ -63,9 +66,10 @@ class YtPlayerControls @JvmOverloads constructor(
         }
     )
 
-    @SuppressLint("ClickableViewAccessibility")
     private val playerListener = object : Player.Listener {
-        override fun onIsPlayingChanged(isPlaying: Boolean) = updatePlayIcon()
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            updatePlayIcon()
+        }
 
         override fun onPlaybackStateChanged(playbackState: Int) {
             binding.buffering.visibility =
@@ -74,6 +78,24 @@ class YtPlayerControls @JvmOverloads constructor(
                 scheduleHide()
             }
             updatePlayIcon()
+            updateProgress()
+        }
+    }
+
+    private val scrubListener = object : TimeBar.OnScrubListener {
+        override fun onScrubStart(timeBar: TimeBar, position: Long) {
+            scrubbing = true
+            show()
+        }
+
+        override fun onScrubMove(timeBar: TimeBar, position: Long) {
+            binding.position.text = Fmt.duration(position)
+        }
+
+        override fun onScrubStop(timeBar: TimeBar, position: Long, canceled: Boolean) {
+            scrubbing = false
+            player?.seekTo(position)
+            show()
         }
     }
 
@@ -88,17 +110,16 @@ class YtPlayerControls @JvmOverloads constructor(
         binding.btnBack.setOnClickListener { onBack?.invoke() }
         binding.btnFullscreen.setOnClickListener { toggleFullscreen() }
         binding.btnSpeed.setOnClickListener { showSpeedMenu(it) }
-
-        binding.timeBar.setPlayer(null)
+        binding.timeBar.addListener(scrubListener)
     }
 
     fun bind(player: Player?, title: String) {
         this.player?.removeListener(playerListener)
         this.player = player
         binding.controlsTitle.text = title
-        binding.timeBar.setPlayer(player)
         player?.addListener(playerListener)
         updatePlayIcon()
+        updateProgress()
         show()
     }
 
@@ -109,7 +130,7 @@ class YtPlayerControls @JvmOverloads constructor(
         )
     }
 
-    /** ظٹظ…ظ†ط¹ ط§ظ„ط´ط±ظٹط· ط§ظ„ط¹ظ„ظˆظٹ/ط§ظ„ط³ظپظ„ظٹ ظ…ظ† ط§ظ„ط¯ط®ظˆظ„ طھط­طھ ط´ط±ظٹط· ط§ظ„ط­ط§ظ„ط© ظˆط£ط²ط±ط§ط± ط§ظ„ظ†ط¸ط§ظ…. */
+    /** يمنع الشريط العلوي/السفلي من الدخول تحت شريط الحالة وأزرار النظام. */
     fun applyInsets() {
         val density = resources.displayMetrics.density
         ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
@@ -156,8 +177,7 @@ class YtPlayerControls @JvmOverloads constructor(
 
     private fun scheduleHide() {
         handler.removeCallbacks(hideRunnable)
-        val playing = player?.isPlaying == true
-        if (playing) {
+        if (player?.isPlaying == true) {
             handler.postDelayed(hideRunnable, 3200)
         }
     }
@@ -187,9 +207,17 @@ class YtPlayerControls @JvmOverloads constructor(
 
     private fun updateProgress() {
         val p = player ?: return
-        val position = p.currentPosition.coerceAtLeast(0)
-        val duration = p.duration
-        binding.position.text = Fmt.duration(position)
+        val duration = p.duration.coerceAtLeast(0L)
+        val position = p.currentPosition.coerceAtLeast(0L)
+
+        binding.timeBar.setDuration(if (duration > 0) duration else 0L)
+        binding.timeBar.setBufferedPosition(
+            p.bufferedPosition.coerceIn(0L, max(0L, duration))
+        )
+        if (!scrubbing) {
+            binding.timeBar.setPosition(position.coerceIn(0L, max(0L, duration)))
+            binding.position.text = Fmt.duration(position)
+        }
         binding.duration.text = if (duration > 0) Fmt.duration(duration) else "--:--"
     }
 
@@ -207,12 +235,10 @@ class YtPlayerControls @JvmOverloads constructor(
     private fun showSeekIndicator(forward: Boolean) {
         binding.seekIndicator.visibility = View.VISIBLE
         binding.seekAmount.text =
-            if (forward) "10 ط«ظˆط§ظ†ظچ ظ„ظ„ط£ظ…ط§ظ… âڈ©" else "âڈھ 10 ط«ظˆط§ظ†ظچ ظ„ظ„ط®ظ„ظپ"
+            if (forward) "10 ثوانٍ للأمام ⏩" else "⏪ 10 ثوانٍ للخلف"
         handler.removeCallbacks(seekHideRunnable)
         handler.postDelayed(seekHideRunnable, 650)
     }
-
-    private val seekHideRunnable = Runnable { binding.seekIndicator.visibility = View.GONE }
 
     private fun toggleFullscreen() {
         setFullscreen(!isFullscreen)
@@ -225,7 +251,7 @@ class YtPlayerControls @JvmOverloads constructor(
         val speeds = listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f)
         val menu = PopupMenu(context, anchor)
         speeds.forEachIndexed { index, speed ->
-            menu.menu.add(0, index, index, if (speed == 1f) "ط¹ط§ط¯ظٹ" else "${speed}x")
+            menu.menu.add(0, index, index, if (speed == 1f) "عادي" else "${speed}x")
         }
         menu.setOnMenuItemClickListener { item ->
             val speed = speeds[item.itemId]
@@ -250,13 +276,7 @@ class YtPlayerControls @JvmOverloads constructor(
     fun release() {
         handler.removeCallbacksAndMessages(null)
         player?.removeListener(playerListener)
-        binding.timeBar.setPlayer(null)
+        binding.timeBar.removeListener(scrubListener)
         player = null
-    }
-
-    private fun approx(value: Float): String = if (abs(value - value.toInt()) < 0.01f) {
-        value.toInt().toString()
-    } else {
-        value.toString()
     }
 }

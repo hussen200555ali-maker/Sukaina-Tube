@@ -21,14 +21,14 @@ import kotlin.math.abs
 import kotlin.math.max
 
 /**
- * تحكم مشغّل بشكل يوتيوب: اخفاء تلقائي، ضغطة مزدوجة ±10 ثوانٍ، شريط أحمر، سرعة، وملء الشاشة.
+ * طھط­ظƒظ… ظ…ط´ط؛ظ‘ظ„ ط¨ط´ظƒظ„ ظٹظˆطھظٹظˆط¨: ط§ط®ظپط§ط، طھظ„ظ‚ط§ط¦ظٹطŒ ط¶ط؛ط·ط© ظ…ط²ط¯ظˆط¬ط© آ±10 ط«ظˆط§ظ†ظچطŒ ط´ط±ظٹط· ط£ط­ظ…ط±طŒ ط³ط±ط¹ط©طŒ ظˆظ…ظ„ط، ط§ظ„ط´ط§ط´ط©.
  */
 class YtPlayerControls @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : FrameLayout(context, attrs) {
 
-    private val binding = ViewPlayerControlsBinding.inflate(LayoutInflater.from(context), this)
+    private val binding = ViewPlayerControlsBinding.inflate(LayoutInflater.from(context), this, true)
 
     private var player: Player? = null
     private val handler = Handler(Looper.getMainLooper())
@@ -109,7 +109,7 @@ class YtPlayerControls @JvmOverloads constructor(
         )
     }
 
-    /** يمنع الشريط العلوي/السفلي من الدخول تحت شريط الحالة وأزرار النظام. */
+    /** ظٹظ…ظ†ط¹ ط§ظ„ط´ط±ظٹط· ط§ظ„ط¹ظ„ظˆظٹ/ط§ظ„ط³ظپظ„ظٹ ظ…ظ† ط§ظ„ط¯ط®ظˆظ„ طھط­طھ ط´ط±ظٹط· ط§ظ„ط­ط§ظ„ط© ظˆط£ط²ط±ط§ط± ط§ظ„ظ†ط¸ط§ظ…. */
     fun applyInsets() {
         val density = resources.displayMetrics.density
         ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
@@ -207,7 +207,7 @@ class YtPlayerControls @JvmOverloads constructor(
     private fun showSeekIndicator(forward: Boolean) {
         binding.seekIndicator.visibility = View.VISIBLE
         binding.seekAmount.text =
-            if (forward) "10 ثوانٍ للأمام ⏩" else "⏪ 10 ثوانٍ للخلف"
+            if (forward) "10 ط«ظˆط§ظ†ظچ ظ„ظ„ط£ظ…ط§ظ… âڈ©" else "âڈھ 10 ط«ظˆط§ظ†ظچ ظ„ظ„ط®ظ„ظپ"
         handler.removeCallbacks(seekHideRunnable)
         handler.postDelayed(seekHideRunnable, 650)
     }
@@ -225,7 +225,7 @@ class YtPlayerControls @JvmOverloads constructor(
         val speeds = listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f)
         val menu = PopupMenu(context, anchor)
         speeds.forEachIndexed { index, speed ->
-            menu.menu.add(0, index, index, if (speed == 1f) "عادي" else "${speed}x")
+            menu.menu.add(0, index, index, if (speed == 1f) "ط¹ط§ط¯ظٹ" else "${speed}x")
         }
         menu.setOnMenuItemClickListener { item ->
             val speed = speeds[item.itemId]

@@ -37,6 +37,11 @@ import com.sukaina.tube.util.Fmt
 import com.sukaina.tube.util.Ui
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import android.os.Handler
+import android.os.Looper
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import kotlinx.coroutines.withContext
 import kotlin.math.abs
 
@@ -52,6 +57,19 @@ class WatchActivity : AppCompatActivity() {
     private var isFullscreen = false
     private var pendingSeek = 0L
     private var savedLabel = false
+
+    // Sleep Timer
+    private val handler = Handler(Looper.getMainLooper())
+    private var sleepTimerRunnable: Runnable? = null
+    private var sleepTimerMinutes = 0
+
+    // Screen Time tracking
+    private val screenTimeTracker = object : Runnable {
+        override fun run() {
+            trackWatchMinute()
+            handler.postDelayed(this, 60_000L) // كل دقيقة
+        }
+    }
 
     private val app get() = application as SukainaApp
 
@@ -71,6 +89,7 @@ class WatchActivity : AppCompatActivity() {
         binding.controls.applyInsets()
         binding.controls.onBack = { goBack() }
         binding.controls.onFullscreenToggle = { setFullscreen(it) }
+        binding.controls.onSleepTimer = { showSleepTimerDialog() }
         binding.controls.setFullscreen(false)
 
         setupPlayer()
@@ -103,6 +122,15 @@ class WatchActivity : AppCompatActivity() {
                         if (target < duration - 4000) seekTo(target)
                     }
                     if (playbackState == Player.STATE_ENDED) onFinished()
+                    // بدء تتبع وقت المشاهدة عند الجاهزية
+                    if (playbackState == Player.STATE_READY) {
+                        handler.postDelayed(screenTimeTracker, 60_000L)
+                    }
+                }
+                override fun onIsPlayingChanged(isPlaying: Boolean) {
+                    if (!isPlaying) {
+                        handler.removeCallbacks(screenTimeTracker)
+                    }
                 }
             })
         }
@@ -348,14 +376,91 @@ class WatchActivity : AppCompatActivity() {
         super.onStop()
         saveHistory()
         if (!isChangingConfigurations) player.pause()
+        handler.removeCallbacks(screenTimeTracker)
     }
 
     override fun onDestroy() {
         saveHistory()
+        handler.removeCallbacks(screenTimeTracker)
+        sleepTimerRunnable?.let { handler.removeCallbacks(it) }
         binding.playerView.player = null
         binding.controls.release()
         player.release()
         super.onDestroy()
+    }
+
+    // ---------- Sleep Timer ----------
+
+    fun showSleepTimerDialog() {
+        val options = intArrayOf(0, 5, 10, 15, 30, 45, 60, 90)
+        val labels = arrayOf(
+            "إيقاف المؤقت", "5 دقائق", "10 دقائق", "15 دقيقة",
+            "30 دقيقة", "45 دقيقة", "ساعة واحدة", "ساعة ونصف"
+        )
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("مؤقت النوم")
+            .setSingleChoiceItems(labels, 0) { dialog, which ->
+                startSleepTimer(options[which])
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.action_back, null)
+            .show()
+    }
+
+    private fun startSleepTimer(minutes: Int) {
+        sleepTimerRunnable?.let { handler.removeCallbacks(it) }
+        if (minutes == 0) {
+            sleepTimerMinutes = 0
+            Toast.makeText(this, "تم إيقاف المؤقت", Toast.LENGTH_SHORT).show()
+            return
+        }
+        sleepTimerMinutes = minutes
+        Toast.makeText(this, "سيُوقف التشغيل بعد $minutes دقيقة", Toast.LENGTH_SHORT).show()
+        sleepTimerRunnable = Runnable {
+            player.pause()
+            sleepTimerMinutes = 0
+            Toast.makeText(this, "انتهى وقت المشاهدة", Toast.LENGTH_SHORT).show()
+        }
+        handler.postDelayed(sleepTimerRunnable!!, minutes.toLong() * 60_000L)
+    }
+
+    // ---------- Screen Time Tracking ----------
+
+    private fun trackWatchMinute() {
+        if (!this::player.isInitialized || !player.isPlaying) return
+
+        val settings = app.settings
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+
+        // إعادة تعيين العدّاد إذا تغير اليوم
+        if (settings.lastWatchDate != today) {
+            settings.todayWatchedMinutes = 0
+            settings.lastWatchDate = today
+        }
+
+        settings.todayWatchedMinutes = settings.todayWatchedMinutes + 1
+
+        // فحص تجاوز الحد اليومي
+        val limit = settings.dailyLimitMinutes
+        if (limit > 0 && settings.todayWatchedMinutes >= limit) {
+            player.pause()
+            Toast.makeText(this, "انتهى الحد اليومي للمشاهدة", Toast.LENGTH_LONG).show()
+            handler.removeCallbacks(screenTimeTracker)
+        }
+    }
+
+    private fun checkDailyLimit(): Boolean {
+        val settings = app.settings
+        val limit = settings.dailyLimitMinutes
+        if (limit == 0) return true
+
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        if (settings.lastWatchDate != today) {
+            settings.todayWatchedMinutes = 0
+            settings.lastWatchDate = today
+        }
+
+        return settings.todayWatchedMinutes < limit
     }
 
     companion object {

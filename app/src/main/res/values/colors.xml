@@ -18,5 +18,5 @@
     <color name="icon_tint">#FF0F0F0F</color>
     <color name="like_active">#FF065FD4</color>
     <color name="comment_bg">#FFF2F2F2</color>
-    <color name="ic_launcher_background">#FFFFFFFF</color>
+    <color name="ic_launcher_background">#FF0F0F0F</color>
 </resources>

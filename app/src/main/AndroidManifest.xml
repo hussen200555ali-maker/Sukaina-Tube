@@ -24,6 +24,7 @@
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|uiMode|density|fontScale|layoutDirection"
             android:exported="true"
             android:launchMode="singleTop"
+            android:theme="@style/Theme.SukainaTube.Splash"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,6 +55,11 @@
             android:name=".ui.parent.SearchActivity"
             android:theme="@style/Theme.SukainaTube"
             android:windowSoftInputMode="adjustResize|stateVisible" />
+
+        <activity
+            android:name=".ui.parent.OnboardingActivity"
+            android:theme="@style/Theme.SukainaTube.Splash"
+            android:exported="false" />
     </application>
 
 </manifest>

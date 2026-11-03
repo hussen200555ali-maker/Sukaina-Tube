@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Splash Screen Background — Dark background with S+Play logo centered
+  شاشة البداية: خلفية داكنة + شعار S+Play في المركز
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Dark background -->
+    <item android:drawable="@color/ic_launcher_background" />
+    <!-- S+Play logo centered -->
+    <item
+        android:gravity="center"
+        android:width="108dp"
+        android:height="108dp">
+        <inset
+            android:drawable="@drawable/ic_launcher_foreground"
+            android:insetTop="0dp"
+            android:insetBottom="0dp" />
+    </item>
+</layer-list>

@@ -81,6 +81,38 @@ class SettingsStore(context: Context) {
             bump()
         }
 
+    // ---------- إعداد أول مرة (Onboarding) ----------
+
+    var onboardingCompleted: Boolean
+        get() = prefs.getBoolean(KEY_ONBOARDING, false)
+        set(value) {
+            prefs.edit().putBoolean(KEY_ONBOARDING, value).apply()
+        }
+
+    // ---------- وقت المشاهدة (Screen Time) ----------
+
+    /** حد المشاهدة اليومي بالدقائق (0 = غير محدود). */
+    var dailyLimitMinutes: Int
+        get() = prefs.getInt(KEY_DAILY_LIMIT, 0)
+        set(value) {
+            prefs.edit().putInt(KEY_DAILY_LIMIT, value).apply()
+            bump()
+        }
+
+    /** دقائق المشاهدة اليوم (تُعاد تعبئتها كل يوم). */
+    var todayWatchedMinutes: Int
+        get() = prefs.getInt(KEY_TODAY_WATCHED, 0)
+        set(value) {
+            prefs.edit().putInt(KEY_TODAY_WATCHED, value).apply()
+        }
+
+    /** تاريخ آخر جلسة مشاهدة (لإعادة تعيين العدّاد يومياً). */
+    var lastWatchDate: String
+        get() = prefs.getString(KEY_LAST_DATE, "") ?: ""
+        set(value) {
+            prefs.edit().putString(KEY_LAST_DATE, value).apply()
+        }
+
     // ---------- الاشتراكات الوهمية ----------
 
     var subscribedBuckets: Set<String>
@@ -133,5 +165,9 @@ class SettingsStore(context: Context) {
         const val KEY_LOCK_EXIT = "lock_exit"
         const val KEY_PIN = "parent_pin"
         const val KEY_SUBS = "subscribed_buckets"
+        const val KEY_ONBOARDING = "onboarding_completed"
+        const val KEY_DAILY_LIMIT = "daily_limit_minutes"
+        const val KEY_TODAY_WATCHED = "today_watched_minutes"
+        const val KEY_LAST_DATE = "last_watch_date"
     }
 }

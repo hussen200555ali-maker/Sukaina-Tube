@@ -1,14 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Sukaina Tube — Adopted Logo (S + Play Triangle)
+  حرف S على شكل شريط أحمر متدفق + مثلث تشغيل أبيض في المركز
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+
+    <!-- S-shaped ribbon (red) -->
     <path
-        android:fillColor="#FFFF0033"
-        android:pathData="M32,34h44a8,8 0 0 1 8,8v24a8,8 0 0 1 -8,8h-44a8,8 0 0 1 -8,-8v-24a8,8 0 0 1 8,-8z" />
+        android:strokeColor="#FFFF0033"
+        android:strokeWidth="13"
+        android:strokeLineCap="round"
+        android:pathData="M 27,31.5 Q 27,22.5 37.8,22.5 L 70.2,22.5 Q 82.8,22.5 82.8,34.2 Q 82.8,45 70.2,46.8 L 45,50.4 Q 34.2,52.2 34.2,61.2 Q 34.2,70.2 45,72 L 72,75.6 Q 82.8,77.4 82.8,85.5" />
+
+    <!-- Highlight on top of S ribbon (lighter red, thinner) -->
+    <path
+        android:strokeColor="#33FF6B6B"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:pathData="M 27,31.5 Q 27,22.5 37.8,22.5 L 70.2,22.5 Q 82.8,22.5 82.8,34.2 Q 82.8,45 70.2,46.8 L 45,50.4 Q 34.2,52.2 34.2,61.2 Q 34.2,70.2 45,72 L 72,75.6 Q 82.8,77.4 82.8,85.5" />
+
+    <!-- White play triangle in center -->
     <path
         android:fillColor="#FFFFFFFF"
-        android:pathData="M48,44l16,10 -16,10z" />
-</vector>
+        android:strokeColor="#FFFF0033"
+        android:strokeWidth="1.5"
+        android:strokeLineJoin="round"
+        android:pathData="M 47,47 L 47,63 L 63,55 Z" />
 
+</vector>

@@ -134,6 +134,15 @@
                 android:textSize="12sp" />
 
             <ImageButton
+                android:id="@+id/btnSleepTimer"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="مؤقت النوم"
+                android:padding="10dp"
+                android:src="@drawable/ic_sleep_timer" />
+
+            <ImageButton
                 android:id="@+id/btnFullscreen"
                 android:layout_width="40dp"
                 android:layout_height="40dp"

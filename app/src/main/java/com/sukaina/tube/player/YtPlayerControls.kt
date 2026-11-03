@@ -40,6 +40,7 @@ class YtPlayerControls @JvmOverloads constructor(
 
     var onBack: (() -> Unit)? = null
     var onFullscreenToggle: ((Boolean) -> Unit)? = null
+    var onSleepTimer: (() -> Unit)? = null
 
     private val hideRunnable = Runnable { hide() }
     private val seekHideRunnable = Runnable { binding.seekIndicator.visibility = View.GONE }
@@ -110,6 +111,7 @@ class YtPlayerControls @JvmOverloads constructor(
         binding.btnBack.setOnClickListener { onBack?.invoke() }
         binding.btnFullscreen.setOnClickListener { toggleFullscreen() }
         binding.btnSpeed.setOnClickListener { showSpeedMenu(it) }
+        binding.btnSleepTimer.setOnClickListener { onSleepTimer?.invoke() }
         binding.timeBar.addListener(scrubListener)
     }
 

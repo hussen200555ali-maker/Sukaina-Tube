@@ -17,6 +17,9 @@ import com.sukaina.tube.data.SettingsStore
 import com.sukaina.tube.databinding.ActivityParentSettingsBinding
 import com.sukaina.tube.util.Ui
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ParentSettingsActivity : AppCompatActivity() {
 
@@ -118,6 +121,51 @@ class ParentSettingsActivity : AppCompatActivity() {
                 .setNegativeButton(R.string.action_back, null)
                 .show()
         }
+
+        // ---- Screen Time ----
+        updateScreenTimeDisplay()
+        binding.btnDailyLimit.setOnClickListener { showDailyLimitDialog() }
+    }
+
+    private fun updateScreenTimeDisplay() {
+        val limit = settings.dailyLimitMinutes
+        val limitText = if (limit == 0) "غير محدود" else "${limit} دقيقة"
+        binding.btnDailyLimit.text = "الحد اليومي: $limitText"
+
+        // إعادة تعيين العدّاد إذا تغير اليوم
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        if (settings.lastWatchDate != today) {
+            settings.todayWatchedMinutes = 0
+            settings.lastWatchDate = today
+        }
+
+        val watched = settings.todayWatchedMinutes
+        val watchedText = if (limit > 0) {
+            "المشاهد اليوم: ${watched} / ${limit} دقيقة"
+        } else {
+            "المشاهد اليوم: ${watched} دقيقة"
+        }
+        binding.todayWatched.text = watchedText
+    }
+
+    private fun showDailyLimitDialog() {
+        val options = intArrayOf(0, 15, 30, 45, 60, 90, 120, 180, 240)
+        val labels = arrayOf(
+            "غير محدود", "15 دقيقة", "30 دقيقة", "45 دقيقة",
+            "ساعة واحدة", "ساعة ونصف", " ساعتان", "3 ساعات", "4 ساعات"
+        )
+        val current = settings.dailyLimitMinutes
+        val checkedIndex = options.indexOfFirst { it == current }.coerceAtLeast(0)
+
+        AlertDialog.Builder(this)
+            .setTitle("الحد اليومي للمشاهدة")
+            .setSingleChoiceItems(labels, checkedIndex) { dialog, which ->
+                settings.dailyLimitMinutes = options[which]
+                updateScreenTimeDisplay()
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.action_back, null)
+            .show()
     }
 
     private fun rebuildFolders() {

@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -49,9 +50,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // تثبيت شاشة البداية المخصصة (S+Play logo)
+        installSplashScreen()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         app = application as SukainaApp
+
+        // فحص Onboarding — إذا لم يكتمل، افتح شاشة الإعداد الأول
+        if (!app.settings.onboardingCompleted) {
+            val onbIntent = Intent(this, com.sukaina.tube.ui.parent.OnboardingActivity::class.java)
+            startActivity(onbIntent)
+            finish()
+            return
+        }
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
